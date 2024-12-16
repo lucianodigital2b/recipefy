@@ -5,13 +5,7 @@
         you_are_logged_in
       </card> -->
 
-      <v-infinite-scroll  :items="items" :onLoad="load">
-        <template v-for="(item, index) in items" :key="item">
-          <div :class="['pa-2', index % 2 === 0 ? 'bg-grey-lighten-2' : '']">
-            Item number #{{ item }}
-          </div>
-        </template>
-      </v-infinite-scroll>
+
     </div>
   </div>
 </template>
