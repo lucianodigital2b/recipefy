@@ -23,21 +23,35 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+
+        
         return response()->json(['message' => 'User registered successfully'], 201);
     }
 
     public function login(Request $request)
     {
+
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+            'remember' => 'boolean'
         ]);
 
-        if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
+        $remember = $credentials['remember'] ?? false;
+        unset($credentials['remember']);
 
-        return response()->json(Auth::user(), 200);
+        if (!Auth::attempt($credentials, $remember)) {
+            return response([
+                'error' => 'The Provided credentials are not correct'
+            ], 422);
+        }
+        $user = Auth::user();
+        $token = $user->createToken('main')->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'user' => $user 
+        ], 200);
     }
 
     public function logout(Request $request)
