@@ -102,26 +102,27 @@ import Cookies from 'js-cookie'
 import LoginWithGithub from '../../components/LoginWithGithub.vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../store/modules/auth'
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+import axios from '../../plugins/axios';
 
-
-const form = new Form({
+const form = reactive( new Form({
   email: '',
   password: ''
-});
+}));
+
 const router = useRouter()
-const remember = ref(false);
 
 const login = async () => {
   // Submit the form.
-  const { data } = await form.post('/api/login')
+  
+  const { data } = await form.post('/login')
+  
   const store = useAuthStore()
   
   // Save the data.
   store.login({
     token: data.token,
     user: data.user,
-    remember: remember
   })
 
   redirect();

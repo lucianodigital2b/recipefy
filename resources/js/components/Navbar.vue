@@ -21,11 +21,11 @@
 
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
         <li>
-          <v-button @click="router.push({ name: 'login' })" class="rounded-3">New Recipe</v-button>
+          <v-button @click="router.push({ path: '/recipes/create' })" class="rounded-3">New Recipe</v-button>
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link ml-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img :src="user.photo_url ?? 'https://mdbcdn.b-cdn.net/img/new/avatars/2.webp'" class="rounded-circle profile-photo me-1">
+              <img :src="user?.photo_url ?? 'https://mdbcdn.b-cdn.net/img/new/avatars/2.webp'" class="rounded-circle profile-photo me-1">
             </a>
             <ul class="dropdown-menu shadow-sm">
               <!-- <li><a class="dropdown-item" href="#">Action</a></li>
@@ -34,7 +34,7 @@
               <li><router-link @click.prevent="logout" class="nav-link">Favorites</router-link></li>
               <li><router-link @click.prevent="logout" class="nav-link">Add a recipe</router-link></li>
               <li><hr class="dropdown-divider"></li>
-              <li><router-link @click.prevent="logout" class="nav-link">Logout</router-link></li>
+              <li><button @click.prevent="logout" class="nav-link">Logout</button></li>
             </ul>
         </li>
       </ul>
@@ -55,8 +55,9 @@
   const { user } = storeToRefs(store)
 
   const logout = () => {
+    
     store.logout()
-    router.push({ name: '/login' })
+    router.push({ path: '/login' })
   }
 </script>
 
@@ -66,10 +67,6 @@
     height: 2rem;
     margin: -.375rem 0;
   }
-
-  /* .container {
-    max-width: 1100px;
-  } */
 
   .search {
     position: relative;

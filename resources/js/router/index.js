@@ -10,8 +10,8 @@ const routes = [
     { path: '/login', component: Login, name: 'login', meta: { layout: 'basic' } },  
     { path: '/register', component: Register, name: 'register', meta: { layout: 'basic' } },
     { path: '/dashboard', component: Dashboard, name: 'dashboard', meta: { layout: 'default' } },
-    { path: '/recipe/:id', component: RecipeForm, props: true, meta: { layout: 'default' } },
-    { path: '/recipe/create', component: RecipeForm, meta: { layout: 'default' } },
+    { path: '/recipes/:id', component: RecipeForm, props: true, meta: { layout: 'default' } },
+    { path: '/recipes/create', component: RecipeForm, meta: { layout: 'default' } },
 ];
 
 const router = createRouter({

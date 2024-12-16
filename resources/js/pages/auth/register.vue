@@ -73,10 +73,6 @@ export default {
   middleware: 'guest',
 
 
-  metaInfo () {
-    return { title: this.Register }
-  },
-
   data: () => ({
     form: new Form({
       name: '',

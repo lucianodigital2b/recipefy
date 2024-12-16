@@ -2,75 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Recipe;
+use App\Services\RecipeService;
 use Illuminate\Http\Request;
 
 class RecipeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $recipeService;
+
+    public function __construct(RecipeService $recipeService)
+    {
+        $this->recipeService = $recipeService;
+    }
+
     public function index()
     {
-        //
-        return Recipe::paginate(20);
+        $recipes = $this->recipeService->getAllRecipes();
+        return response()->json($recipes);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        $recipe = $this->recipeService->getRecipeById($id);
+        return response()->json($recipe);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreRecipeRequest  $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
-
-        return Recipe::create($request->all());
+        $recipe = $this->recipeService->createRecipe($request->all());
+        return response()->json($recipe, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Recipe $recipe)
+    public function update(UpdateRecipeRequest  $request, $id)
     {
-        return Recipe::findOrFail($id);
+        $recipe = $this->recipeService->updateRecipe($id, $request->all());
+        return response()->json($recipe);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Recipe $recipe)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Recipe $recipe)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Recipe $recipe)
-    {
-        //
-
-        $recipe = Recipe::findOrFail($id);
-        $recipe->delete();
-
-        return response(null, 204);
+        $this->recipeService->deleteRecipe($id);
+        return response()->json(null, 204);
     }
 }
