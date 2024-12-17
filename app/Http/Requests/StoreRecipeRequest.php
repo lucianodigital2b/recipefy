@@ -20,12 +20,12 @@ class StoreRecipeRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'required|string',
+            'servings' => 'required',
             'ingredients' => 'required|array',
-            'ingredients.*' => 'required|string',
             'steps' => 'required|array',
-            'steps.*' => 'required|string',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:31800000',
         ];
     }
 }

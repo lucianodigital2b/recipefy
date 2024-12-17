@@ -20,12 +20,12 @@ class UpdateRecipeRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'sometimes|string|max:255',
+            'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'ingredients' => 'sometimes|array',
-            'ingredients.*' => 'sometimes|string',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:31800000',
+            'servings' => 'required',
             'steps' => 'sometimes|array',
-            'steps.*' => 'sometimes|string',
         ];
     }
 }
