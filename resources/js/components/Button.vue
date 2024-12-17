@@ -2,9 +2,9 @@
   <button :type="nativeType" :disabled="loading" :class="{
     [`btn-${type}`]: true,
     'btn-block w-100': block,
-    'btn-lg': large,
-    'btn-loading': loading
-  }" class="btn rounded-3 text-white"
+    'btn-lg py-2': large,
+    'btn-loading': loading,
+  }" class="btn rounded-3 d-flex align-items-center gap-1 justify-content-center" style="font-weight: 500;"
   >
     <slot />
   </button>

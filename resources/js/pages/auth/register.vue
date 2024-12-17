@@ -1,110 +1,128 @@
 <template>
-  <div class="row">
-    <div class="col-lg-7 m-auto">
-      <card v-if="mustVerifyEmail" :title="Register">
-        <div class="alert alert-success" role="alert">
-          {{ $t('verify_email_address') }}
+  <section class="wrapper-form" >
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-xl-10">
+          <div class="card rounded-5 text-black">
+            <div class="row g-0">
+              <div class="col-lg-6">
+                <div class="card-body p-md-5 mx-md-4">
+
+                  <div class="d-flex align-items-center justify-content-baseline mb-7 gap-2">
+                    <img :src="'../img/logo.png'" alt="logo" class="logo">
+                    <h4 class="mb-0 font-weight-bold logo">recipefy</h4>
+                  </div>
+
+                  <form @submit.prevent="register" @keydown="form.onKeydown($event)">
+                    <p>Please fill all the required fields</p>
+
+                    <AlertError :form="form" />
+                    <div class="form-outline mb-4">
+                      <label class="form-label" for="form2Example11">Name</label>
+                      <input solid v-model="form.name" :class="{ 'is-invalid': form.errors.has('name') }" class="form-control" name="name">
+                      <has-error :form="form" field="name" />
+                    </div>
+
+                    <div class="form-outline mb-4">
+                      <label class="form-label" for="form2Example11">E-mail</label>
+                      <input solid v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email">
+                      <has-error :form="form" field="email" />
+                    </div>
+
+                    <div class="form-outline mb-4">
+                      <label class="form-label" for="form2Example22">Password</label>
+                      <input autocomplete  v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
+                      <has-error :form="form" field="password" />
+
+                    </div>
+                    <div class="form-outline mb-4">
+                      <label class="form-label" for="form2Example22">Confirm Password</label>
+                      <input autocomplete  v-model="form.password_confirmation" :class="{ 'is-invalid': form.errors.has('password_confirmation') }" class="form-control" type="password" name="password_confirmation">
+                      <has-error :form="form" field="password_confirmation" />
+                    </div>
+
+                    <div class="text-center pt-1 mb-5 pb-1">
+                      <v-button large block :loading="form.busy">Register</v-button>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-center pb-4">
+                      <p class="mb-0 me-2">Already have an account?</p>
+                      <router-link
+                        :to="{ path: '/login' }"
+                        class="font-medium "
+                      >
+                        Login now
+                      </router-link>
+                    </div>
+
+                  </form>
+
+                </div>
+              </div>
+              <div class="col-lg-6 d-flex align-items-center bg-img">
+              </div>
+            </div>
+          </div>
         </div>
-      </card>
-      <card v-else :title="Register">
-        <form @submit.prevent="register" @keydown="form.onKeydown($event)">
-          <!-- Name -->
-          <div class="mb-3 row">
-            <label class="col-md-3 col-form-label text-md-end">Name</label>
-            <div class="col-md-7">
-              <input v-model="form.name" :class="{ 'is-invalid': form.errors.has('name') }" class="form-control" type="text" name="name">
-              <has-error :form="form" field="name" />
-            </div>
-          </div>
-
-          <!-- Email -->
-          <div class="mb-3 row">
-            <label class="col-md-3 col-form-label text-md-end">E-mail</label>
-            <div class="col-md-7">
-              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email">
-              <has-error :form="form" field="email" />
-            </div>
-          </div>
-
-          <!-- Password -->
-          <div class="mb-3 row">
-            <label class="col-md-3 col-form-label text-md-end">Password</label>
-            <div class="col-md-7">
-              <input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
-              <has-error :form="form" field="password" />
-            </div>
-          </div>
-
-          <!-- Password Confirmation -->
-          <div class="mb-3 row">
-            <label class="col-md-3 col-form-label text-md-end">Confirm Password</label>
-            <div class="col-md-7">
-              <input v-model="form.password_confirmation" :class="{ 'is-invalid': form.errors.has('password_confirmation') }" class="form-control" type="password" name="password_confirmation">
-              <has-error :form="form" field="password_confirmation" />
-            </div>
-          </div>
-
-          <div class="mb-3 row">
-            <div class="col-md-7 offset-md-3 d-flex">
-              <!-- Submit Button -->
-              <v-button :loading="form.busy">
-              Register
-              </v-button>
-
-              <!-- GitHub Register Button -->
-              <login-with-github />
-            </div>
-          </div>
-        </form>
-      </card>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 
-<script>
-import Form from 'vform'
-import LoginWithGithub from '../../components/LoginWithGithub.vue'
 
-export default {
-  components: {
-    LoginWithGithub
-  },
+<style scoped>
+  .bg-img {
+    background: url('../img/register-img.jpg') no-repeat center center;
+    background-size: cover;
+  }
 
-  middleware: 'guest',
+  .wrapper-form {
+    height: 100vh;
+  }
 
-
-  data: () => ({
-    form: new Form({
-      name: '',
-      email: '',
-      password: '',
-      password_confirmation: ''
-    }),
-    mustVerifyEmail: false
-  }),
-
-  methods: {
-    async register () {
-      // Register the user.
-      const { data } = await this.form.post('/api/register')
-
-      // Must verify email fist.
-      if (data.status) {
-        this.mustVerifyEmail = true
-      } else {
-        // Log in the user.
-        const { data: { token } } = await this.form.post('/api/login')
-
-        // Save the token.
-        this.$store.dispatch('auth/saveToken', { token })
-
-        // Update the user.
-        await this.$store.dispatch('auth/updateUser', { user: data })
-
-        // Redirect home.
-        this.$router.push({ name: 'dashboard' })
-      }
+  @media (min-width: 769px) {
+    .bg-img {
+      border-top-right-radius:2rem;
+      border-bottom-right-radius:2rem;
     }
   }
+</style>
+
+<script setup>
+
+
+import Form from 'vform'
+import Cookies from 'js-cookie'
+import LoginWithGithub from '../../components/LoginWithGithub.vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../../store/modules/auth'
+import { ref, reactive } from 'vue'
+import axios from '../../plugins/axios';
+
+const form = reactive( new Form({
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: ''
+}));
+
+const router = useRouter()
+
+const register = async () => {
+    const { data } = await form.post('/register')
+    const store = useAuthStore()
+    
+    const login_data = await form.post('/login')
+
+
+    // Log in the user.
+    store.login({
+      token: login_data.data.token,
+      user: login_data.data.user,
+    })
+
+    // Redirect home.
+    router.push({ name: 'dashboard' })
 }
+
 </script>
