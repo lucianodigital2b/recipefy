@@ -6,7 +6,11 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <router-link :to="{ name: 'dashboard' }" class="navbar-brand me-auto">Recipefy</router-link>
+      <router-link :to="{ name: 'dashboard' }" class="navbar-brand me-auto logo d-flex align-items-center justify-content-baseline gap-2">
+        <img :src="'../img/logo.png'" alt="logo" class="logo">
+        recipefy
+      </router-link>
+      
 
       <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
@@ -19,24 +23,29 @@
         <!-- <button class="btn btn-outline-success" type="submit">Search</button> -->
       </form>
 
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
-        <li>
-          <v-button @click="router.push({ path: '/recipes/create' })" class="rounded-3">New Recipe</v-button>
-        </li>
-        <li class="nav-item dropdown">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center" >
+        <v-button v-if="user" @click="router.push({ path: '/recipes/create' })"><LightBulbIcon class="hero-icon"/> new recipe</v-button>
+        <li class="nav-item dropdown" v-if="user">
             <a class="nav-link ml-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img :src="user?.photo_url ?? 'https://mdbcdn.b-cdn.net/img/new/avatars/2.webp'" class="rounded-circle profile-photo me-1">
+              <img :src="user?.photo_url ?? '../img/avatar.png'"  class="rounded-circle profile-photo me-1">
             </a>
             <ul class="dropdown-menu shadow-sm">
-              <!-- <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><hr class="dropdown-divider"></li> -->
-              <li><router-link @click.prevent="logout" class="nav-link">Favorites</router-link></li>
-              <li><router-link @click.prevent="logout" class="nav-link">Add a recipe</router-link></li>
+
+              <li><button @click.prevent="logout" class="nav-link">Favorites</button></li>
+              <li><router-link to="/recipes/create" class="nav-link">Add a recipe</router-link></li>
               <li><hr class="dropdown-divider"></li>
               <li><button @click.prevent="logout" class="nav-link">Logout</button></li>
             </ul>
         </li>
+        <!-- Guest -->
+        <template v-else>
+          <li class="nav-item">
+            <router-link :to="{ path: '/login' }" class="nav-link">Login</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link :to="{ path: '/register' }" class="nav-link"> Register</router-link>
+          </li>
+        </template>
       </ul>
 
     </div>
@@ -48,7 +57,7 @@
   import { useAuthStore } from '../store/modules/auth'
   import { storeToRefs } from 'pinia'
   import { useRouter } from 'vue-router';
-  import { PlusIcon } from '@heroicons/vue/24/solid'
+  import { LightBulbIcon, UserCircleIcon } from '@heroicons/vue/24/outline'
 
   const store = useAuthStore()
   const router = useRouter()

@@ -1,18 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Login from '../pages/auth/login.vue';
-import Register from '../pages/auth/register.vue';
-import Dashboard from '../pages/dashboard.vue';
+import Login from '../pages/auth/Login.vue';
+import Register from '../pages/auth/Register.vue';
+import Dashboard from '../pages/Dashboard.vue';
 import { useAuthStore } from '../store/modules/auth'
-import RecipeForm from '../pages/recipes/RecipeForm.vue';
+import routes from './routes';
 
-const routes = [
-    { path: '/', component: Login, name: 'login', meta: { layout: 'basic' } },  
-    { path: '/login', component: Login, name: 'login', meta: { layout: 'basic' } },  
-    { path: '/register', component: Register, name: 'register', meta: { layout: 'basic' } },
-    { path: '/dashboard', component: Dashboard, name: 'dashboard', meta: { layout: 'default' } },
-    { path: '/recipes/:id', component: RecipeForm, props: true, meta: { layout: 'default' } },
-    { path: '/recipes/create', component: RecipeForm, meta: { layout: 'default' } },
-];
 
 const router = createRouter({
     history: createWebHistory(),
