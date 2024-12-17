@@ -1,8 +1,9 @@
 import axios from 'axios'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import {useAuthStore} from '../store/modules/auth'
-import { useRouter } from 'vue-router'
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { globalRouter } from "../router/globalRouter";
+
 
 axios.defaults.baseURL = '/api';
 
@@ -24,27 +25,16 @@ axios.interceptors.request.use(request => {
 // Response interceptor
 axios.interceptors.response.use(response => response, error => {
 
-  console.log('entro');
   
-  const { status } = error.response
-  // const router = useRouter();
-  // const store = useAuthStore();
-  
-  // if (status === 401) {
-  //   Swal.fire({
-  //     icon: 'warning',
-  //     title: i18n.t('token_expired_alert_title'),
-  //     text: i18n.t('token_expired_alert_text'),
-  //     reverseButtons: true,
-  //     confirmButtonText: i18n.t('ok'),
-  //     cancelButtonText: i18n.t('cancel')
-  //   }).then(() => {
-  //     store.logout();
-  //     router.push({ name: 'login' })
-  //   })
-  // }
+  const  status  = error.response?.status ?? error.status;
 
-  console.log(status)
+  const store = useAuthStore();
+  
+  if (status === 401) {
+    store.logout();
+    globalRouter.router?.push({ name: 'login' })
+  }
+
   if (status >= 500 || status == 405) {
     serverError(error.response)
   }
