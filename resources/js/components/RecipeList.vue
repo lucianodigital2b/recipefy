@@ -24,7 +24,6 @@ let bottom = ref(false);
 
 watch(bottom, () => {
   fetchRecipes();
-
 });
 
 const fetchRecipes = async () => {
@@ -48,10 +47,7 @@ const fetchRecipes = async () => {
 }
 
 onMounted(() => {
-
-  window.onscroll = () => {
-    bottom.value = bottomVisible();
-  }
+  fetchRecipes();
 })
 
 const bottomVisible = () => {
