@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\RecipeActionController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -35,4 +36,9 @@ Route::get('/auth/callback', function () {
 });
 
 
-Route::apiResource('recipes', RecipeController::class);
+Route::group(['middleware' => ['auth:sanctum']], function() {
+    Route::apiResource('recipes', RecipeController::class);
+    
+    Route::post('recipes/{recipe}/vote', [RecipeActionController::class, 'updateVote'])->name('recipes.votes.update');
+    Route::post('recipes/{recipe}/favorite', [RecipeActionController::class, 'updateFavorite'])->name('recipes.favorite.update');
+});

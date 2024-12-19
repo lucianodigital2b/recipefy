@@ -35,6 +35,7 @@ axios.interceptors.response.use(response => response, error => {
     globalRouter.router?.push({ name: 'login' })
   }
 
+
   if (status >= 500 || status == 405) {
     serverError(error.response)
   }

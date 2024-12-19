@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Services\RecipeService;
 use Illuminate\Http\Request;
+use App\Http\Requests\{StoreRecipeRequest, UpdateRecipeRequest};
+use App\Http\Resources\RecipeResource;
 
 class RecipeController extends Controller
 {
@@ -16,7 +18,7 @@ class RecipeController extends Controller
 
     public function index()
     {
-        $recipes = $this->recipeService->getAllRecipes();
+        $recipes = $this->recipeService->getPublishedRecipes();
         return response()->json($recipes);
     }
 

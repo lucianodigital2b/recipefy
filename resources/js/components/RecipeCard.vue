@@ -2,27 +2,30 @@
   <div class="mb-3 border-bottom" >
     <div class="row align-items-center py-7">
       <div class="col-md-auto col-sm-12">
-        <router-link to="{{ name: '/recipes/' + id }}" class="text-decoration-none">
+        <router-link :to="{ name: 'recipes.show', params: { slug: slug } }" class="text-decoration-none">
           <img :src="thumbnail ? `../storage/${thumbnail}` : '../img/blank-image-recipe.png'" alt="Post Thumbnail" class="img-fluid rounded-3 recipe-thumbnail" >
         </router-link>
       </div>
       <div class="col">
         <div class="card-body">
-          <router-link to="{{ name: '/recipes/' + id }}" class="text-decoration-none"><h5 class="card-title">{{ title }}</h5></router-link> 
+          <router-link :to="{ name: 'recipes.show', params: { slug: slug } }" class="text-decoration-none">
+            <h5 class="card-title">{{ title }}</h5>
+          </router-link> 
           <div class="text-muted"><small>By {{ author }}</small></div>
 
           <div class="d-flex gap-2">
             <div class="d-inline-flex align-items-center rounded-3 mt-4" style="background-color: #F1F1F4;">
-              <button @click.prevent="upvote" class="btn btn-sm btn-upvote" :class="{ 'has-upvoted': hasUpvoted }">
+              <button @click.prevent="changeVote(1)" class="btn btn-sm btn-upvote" :class="{ 'has-upvoted': hasUpvoted }">
                 <ArrowUpIcon class="hero-icon"/>
               </button>
               <span class="text-dark">{{ votes }}</span>
-              <button @click.prevent="downvote" class="btn btn-sm btn-downvote" :class="{ 'has-downvoted': hasDownvoted }">
+              <button @click.prevent="changeVote(-1)" class="btn btn-sm btn-downvote" :class="{ 'has-downvoted': hasDownvoted }">
                 <ArrowDownIcon class="hero-icon"/>
               </button>
             </div>
             <div class="d-inline-flex align-items-center rounded-3 mt-4" style="background-color: #F1F1F4;">
               <button @click.prevent="favorite" class="btn btn-sm" :class="{ 'has-favorited': hasFavorited }">
+                {{ favorites }}
                 <HeartIcon v-if="!hasFavorited" class="hero-icon btn-favorited"/>
                 <HeartIconSolid v-if="hasFavorited" class="hero-icon"/>
               </button>
@@ -66,42 +69,65 @@
 </style>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import { ArrowDownIcon, ArrowUpIcon, HeartIcon } from '@heroicons/vue/24/outline'
 import { HeartIcon as HeartIconSolid } from '@heroicons/vue/24/solid'
+import axios from '../plugins/axios';
 
 const props = defineProps({
   id: Number,
   title: String,
+  slug: String,
   thumbnail: String,
   author: String,
-  votes: Number
+  votes: Number,
+  favorites: Number,
 })
 
-let votes = ref(0);
+
+let votes = ref(props.votes);
+let favorites = ref(props.favorites);
+
 let hasUpvoted = ref(false);
 let hasDownvoted = ref(false);
 let hasFavorited = ref(false);
+let loading = ref(false);
 
-const upvote = () => {
-  if(!hasUpvoted) return;
-  votes.value += 1;
-  hasUpvoted.value = !hasUpvoted.value;
+const changeVote = async (vote) => {
+  if( loading.value || (hasUpvoted.value || hasDownvoted.value)) return;
+
+  votes.value += vote;
+  hasUpvoted.value = vote === 1
+  hasDownvoted.value = vote !== 1;
+
+  loading.value = true;
+
+  try {
+    await axios.post('/recipes/' + props.id + '/vote', {
+      direction: vote
+    });
+  }finally {
+    loading.value = false;
+  }
 }
 
-const downvote = () => {
-  if(!hasDownvoted) return;
-
-  votes.value -= 1;
-  hasDownvoted.value = !hasDownvoted.value;
-}
-
-const favorite = () => {
-  if(!hasFavorited) return;
+const favorite = async () => {
+  
+  if( loading.value) return;
 
   hasFavorited.value = !hasFavorited.value;
+  favorites.value = hasFavorited.value ? favorites.value + 1 : favorites.value - 1;
 
-  form.post('/recipes/' + props.id + '/favorite');
+  loading.value = true;
+
+  try {
+    await axios.post('/recipes/' + props.id + '/favorite', {
+      direction: hasFavorited.value
+    });
+  }finally {
+    loading.value = false;
+  }
+
 
 }
 

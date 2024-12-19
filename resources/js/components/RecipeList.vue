@@ -1,9 +1,13 @@
 <template>
     <template v-for="(item) in items" :key="item">
         <recipe-card 
+          :id="item.id"
           :title="item.title"
+          :slug="item.slug ?? 'blabla'"
           :thumbnail="item.thumbnail"
           :author="'Admin'"
+          :votes="item.votes ?? 0"
+          :favorites="item.favorites ?? 0"
         />
 
     </template>

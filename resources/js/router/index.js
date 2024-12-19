@@ -19,6 +19,7 @@ async function loadLayoutMiddleware(route, from) {
     
     try {
         let layout = route.meta.layout;
+        
         let layoutComponent = await import(`/resources/js/layouts/${layout}.vue`)
 
         route.meta.layoutComponent = layoutComponent.default

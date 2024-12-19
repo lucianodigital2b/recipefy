@@ -14,15 +14,17 @@ return new class extends Migration
         Schema::create('recipes', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
-            $table->integer('servings');
-            $table->integer('prep_time');
-            $table->integer('prep_time_type');
-
+            $table->string('slug', 255);
+            $table->string('thumbnail', 255)->nullable();
+            $table->integer('status')->default(1)->comment('1 = Published, 0 = Draft');
             $table->longText('description');
-            $table->foreignId('created_by')->foreign('users');
-            $table->foreignId('category_id');
-
-            $table->longText('notes')->nullable();
+            $table->decimal('servings', 18, 2);
+            $table->integer('prep_time');
+            $table->integer('upvotes')->default(0);
+            $table->integer('downvotes')->default(0);
+            $table->integer('favorites')->default(0);
+            $table->integer('prep_time_type')->comment('1 = minutes, 2 = hours, 3 = days');
+            $table->foreignId('created_by')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
         });

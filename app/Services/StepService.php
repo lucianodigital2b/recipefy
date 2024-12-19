@@ -11,10 +11,15 @@ class StepService
      */
     public function createSteps(int $recipeId, array $steps)
     {
-        foreach ($steps as $order => $description) {
+        foreach ($steps as $order => $step) {
+
+            if(!isset($step['description'])) {
+                continue;
+            }
+            
             Step::create([
                 'recipe_id' => $recipeId,
-                'description' => $description,
+                'description' => $step['description'],
                 'order' => $order + 1, // Steps should be 1-based index
             ]);
         }
