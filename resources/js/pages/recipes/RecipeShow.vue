@@ -1,151 +1,5 @@
 <template>
-    <div class="colored-bg">
 
-    </div>
-    <div class="col-lg-7 mx-auto my-7">
-        <card class="rounded-4 p-md-3 shadow-sm">
-            <h3 class="mb-5">{{ form.id ? 'Edit Recipe' : 'Create a recipe' }}</h3>
-            <form @submit.prevent="saveRecipe">
-                <div class="row mb-7">
-                    <div class="col-md-7">
-                        <div class="mb-3">
-                            <label>Title</label>
-                            <input v-model="form.title" :class="{ 'is-invalid': form.errors.has('title') }" class="form-control" name="title">
-                            <has-error :form="form" field="title" />
-            
-                        </div>
-                        <div class="mb-3">
-                            <label>Description</label>
-                            
-                            <textarea rows="5" v-model="form.description" :class="{ 'is-invalid': form.errors.has('description') }" class="form-control" name="description"></textarea>
-                            <has-error :form="form" field="description" />
-            
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <label>Thumbnail (optional)</label>
-                        <div class="thumbnail-wrapper position-relative">
-                            <button class="file-input-button " @click.prevent="onPickFile">
-                                <div v-if="!thumbnailPreview" class="input-empty"></div>
-                                <div
-                                    v-if="thumbnailPreview"
-                                    class="image-preview"
-                                    :style="{ backgroundImage: `url(${thumbnailPreview})` }"
-                                >
-                                </div>
-                                
-                            </button>
-                            <button class="btn btn-light clear-thumbnail p-1 py-0" @click.prevent="clearThumbnail" v-if="thumbnailPreview"><XMarkIcon class="hero-icon"></XMarkIcon></button>
-
-                        </div>
-
-                        <div class="text-muted">
-                            <small>
-                                Use JPEG or PNG. Must be at least 960 x 960. Max file size: 30MB
-                            </small>
-                        </div>
-                        <input
-                            type="file"
-                            style="display: none"
-                            ref="thumbnail"
-                            accept=".png, .jpg, .jpeg"
-                            @change="handleFile"
-                        />
-                        <HasError :form="form" field="thumbnail" />
-                    </div>
-                </div>
-                <div class="row">
-                    <h6>Gallery</h6>
-                    <div class="col-md-12">
-                        <div class="recipe-gallery">
-                            <div class="recipe-gallery-item" v-for="image in form.gallery" :key="image">
-                                <button class="close-button" @click.prevent="removeImage(image)"><XMarkIcon class="hero-icon"></XMarkIcon></button>
-                                <img :src="image" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <hr>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="mb-3">
-                            <h6 class="mb-6">Ingredients</h6>
-                            <div class="text-muted mb-3">
-                                List each ingredient on a separate line, specifying the quantity (e.g., cups, tablespoons) and any necessary preparation (e.g., sifted, softened, chopped)
-                            </div>
-                            <div class="d-flex gap-2 align-items-center mb-3" v-for="ingredient in form.ingredients" :key="ingredient">    
-                                <input v-model="ingredient.name" class="form-control " :placeholder="ingredient.placeholder ?? ''">
-                                <v-button type="light" class="rounded-pill p-1" @click.prevent="removeIngredient"><XMarkIcon class="hero-icon"></XMarkIcon></v-button>
-                            </div>
-
-                            <v-button type="outline-primary" @click.prevent="addIngredient" class="px-7"><PlusIcon class="hero-icon"></PlusIcon> add ingredient</v-button>
-                            <has-error :form="form" field="ingredients" />
-                            
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="mb-3">
-                            <h6 class="mb-6">Directions</h6>
-                            <div class="text-muted mb-3">
-                                Provide step-by-step instructions for making your recipe, including details like oven temperatures, cooking or baking times, and pan sizes. Use optional headers to organize sections of the process, such as "Prep," "Bake," or "Decorate."
-                            </div>
-                            <div v-for="(step, index) in form.steps" :key="step">
-                                <div for="" class="form-label flex-1">Step {{ index +1 }}</div>
-                                <div class="d-flex gap-2 align-items-center mb-3">
-                                    <input v-model="step.description" class="form-control" :placeholder="step.placeholder ?? ''">
-                                    <v-button type="light" @click.prevent="removeStep" class="rounded-pill p-1"><XMarkIcon class="hero-icon"></XMarkIcon></v-button>
-
-                                </div>
-                            </div>
-                            <v-button type="outline-primary" @click.prevent="addStep"><PlusIcon class="hero-icon"></PlusIcon> add step</v-button>
-                            <has-error :form="form" field="steps" />
-            
-                        </div>
-                    </div>
-                </div>
-                <hr>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <label>Prep time</label>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <input placeholder="e.g. 30"  v-model="form.prep_time" :class="{ 'is-invalid': form.errors.has('prep_time') }" class="form-control" name="prep_time" type="number">
-                            <has-error :form="form" field="prep_time" />
-            
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="">
-                            <select name="prep_time_type" id="" class="form-control" v-model="form.prep_time_type">
-                                <option value="1">mins</option>    
-                                <option value="2">hours</option>    
-                                <option value="3">days</option>    
-                            </select>
-                            <has-error :form="form" field="prep_time_type" />
-                        </div>
-                    </div>
-
-                    <div class="col-md-8 mb-5">
-                        <label>Servings</label>
-                        <input placeholder="e.g. 3"  v-model="form.servings" :class="{ 'is-invalid': form.errors.has('servings') }" class="form-control" name="servings" type="number">
-                        <has-error :form="form" field="servings" />
-                    </div>
-                    
-                </div>
-                
-                <v-button class="" large :loading="form.busy">save</v-button>
-            </form>
-
-
-        </card>
-    </div>
 </template>
 
 
@@ -208,6 +62,9 @@ const route = useRoute();
 const router = useRouter();
 const store = useRecipesStore();
 
+
+const slug = route.params.slug;
+
 const form = reactive( new Form({
   title: '',
   description: '',
@@ -215,103 +72,16 @@ const form = reactive( new Form({
   servings: '',
   prep_time: '',
   prep_time_type: '1',
-  ingredients: [
-    {
-        placeholder: 'e.g. 1 spoon of sugar',
-        name: '',
-    }, 
-    {
-        name: '',
-        placeholder: 'e.g. 1 cup of rice',
-    }, 
-    {
-        name: '',
-        placeholder: 'e.g. 2 spoons of cream',
-    }
-  ],
-  steps: [
-        {
-            description: '',
-            placeholder: 'e.g. Turn on the Airless Air Fryer',
-        },
-    ],
-
+  ingredients: [],
+  steps: [],
 }));
-const thumbnail = ref(null);
-const thumbnailPreview = ref(null);
-
-const id = route.params.id;
-
-const saveRecipe = async () => {
-    if (id) {
-        const { data } = await form.patch('/recipes/' + id, form)
-    } else {
-        await form.post('/recipes')
-    }
-
-    router.push({ path: '/dashboard' });
-};
 
 onMounted(() => {
-    if (id) {
-        form.get(`/recipes/${id}`).then((response) => {
+    if (slug) {
+        form.get(`/recipes/${slug}`).then((response) => {
             Object.assign(form, response.data);
         });
     }
 });
 
-const addStep = () => {
-    form.steps.push({});
-}
-
-const removeStep = (index) => {
-    form.steps.splice(index, 1);
-}
-
-const addIngredient = () => {
-    form.ingredients.push({});
-}   
-
-const removeIngredient = (index) => {
-    form.ingredients.splice(index, 1);
-}
-
-const handleFile = (event) => {
-    // We'll grab just the first file...
-    // You can also do some client side validation here.
-    const file = event.target.files[0]
-
-    if(!file) {
-        return;
-    }
-
-    if(!file.type.startsWith("image/")) {
-        alert('Uplaod an image');
-    }
-
-    
-    if (file.size > 31800000) { // 30MB
-        alert('File too big (> 30MB)');
-        return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-        thumbnailPreview.value = e.target.result;
-    };
-
-    reader.readAsDataURL(file);
-    
-    // Set the file object onto the form...
-    form.thumbnail = file
-};
-
-const onPickFile = () => {
-    thumbnail.value.click()
-}
-const clearThumbnail = () => {
-    form.thumbnail = null
-    thumbnailPreview.value = null
-}
 </script>
