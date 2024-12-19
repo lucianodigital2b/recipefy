@@ -47,8 +47,8 @@ const fetchRecipes = async () => {
   
 }
 
-onMounted(fetchRecipes)
 onMounted(() => {
+
   window.onscroll = () => {
     bottom.value = bottomVisible();
   }
