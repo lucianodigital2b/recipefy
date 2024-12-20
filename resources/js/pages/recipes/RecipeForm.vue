@@ -173,7 +173,7 @@
     }
 
     .input-empty {
-        background: url('../img/blank-image.svg') no-repeat center center;
+        background: url('/img/blank-image.svg') no-repeat center center;
         background-size: cover;
         width: 150px;
         height: 100px;
