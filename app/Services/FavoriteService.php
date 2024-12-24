@@ -7,20 +7,24 @@ use Illuminate\Support\Facades\DB;
 
 class FavoriteService
 {
-    public function updateFavorite(int $userId, int $recipe, int $type)
+    public function updateFavorite(int $userId, int $recipeId, int $type)
     {
+        $recipe = Recipe::findOrFail($recipeId);    
+
         if($type) {
-            return DB::table('recipes_users_favorites')->insert([
+            $recipe->increment('favorites', 1);
+            return DB::table('recipe_user_favorites')->insert([
                 'user_id' => $userId,
-                'recipe_id' => $recipe,
+                'recipe_id' => $recipeId,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
 
-        return DB::table('recipes_users_favorites')
+        $recipe->decrement('favorites', 1);
+        return DB::table('recipe_user_favorites')
                 ->where('user_id', $userId)
-                ->where('recipe_id', $recipe)
+                ->where('recipe_id', $recipeId)
                 ->delete();
     }
 }

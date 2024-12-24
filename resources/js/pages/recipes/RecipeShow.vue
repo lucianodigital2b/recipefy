@@ -94,11 +94,6 @@
                         </button>
                     </div>
                 </div>
-  
-
-
-                
-
 
         </div>
     </div>
@@ -152,9 +147,8 @@
 
 <script setup>
 
-import { onMounted } from 'vue';
+import { onMounted, toValue, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import Form from 'vform'
 import { useRecipesStore } from '../../store/modules/recipes'
 import { ref, reactive } from 'vue'
 import axios from '../../plugins/axios';
@@ -170,9 +164,6 @@ const store = useRecipesStore();
 const id = route.params.id;
 const recipe = reactive({});
 
-const { votes, loading, changeVote, hasUpvoted, hasDownvoted } = useVote(props.id, props.votes, props.hasUpvoted, props.hasDownvoted);
-const { favorites, hasFavorited, favorite, loading: loadingFavorite } = useFavorite(props.id, props.favorites, props.hasFavorited);
-
 
 onMounted(() => {
     if (id) {
@@ -181,6 +172,10 @@ onMounted(() => {
         });
     }
 });
+
+
+const { votes, loading, changeVote, hasUpvoted, hasDownvoted } = useVote(id, () => recipe.votes, () => recipe.userVote?.type == 1, () => recipe.userVote?.type != 1);
+const { favorites, hasFavorited, favorite, loading: loadingFavorite } = useFavorite(id, () => recipe.favorites, () => recipe.userFavorite != null);
 
 
 </script>

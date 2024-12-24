@@ -9,7 +9,12 @@ class VoteService
 {
     public function vote(int $userId, int $recipeId, int $type)
     {
-        DB::table('recipes_users_votes')->insert([
+
+        $recipe = Recipe::findOrFail($recipeId);    
+        $type == 1 ? $recipe->increment('upvotes', 1) : $recipe->decrement('upvotes', 1);
+
+
+        DB::table('recipe_user_votes')->insert([
             'user_id' => $userId,
             'recipe_id' => $recipeId,
             'type' => $type,

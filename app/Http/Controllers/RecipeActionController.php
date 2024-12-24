@@ -26,6 +26,7 @@ class RecipeActionController extends Controller
 
     public function updateVote(int $id, VoteRequest $request)
     {
+
         $this->voteService->vote(auth()->id(), $id, $request->direction);
         
         return response()->json(['message' => 'Vote upvoted successfully']);

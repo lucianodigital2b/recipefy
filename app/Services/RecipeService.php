@@ -26,7 +26,7 @@ class RecipeService
      */
     public function getPublishedRecipes()
     {
-        return Recipe::where('status', Recipe::RECIPE_STATUS_PUBLISHED)->paginate(3);
+        return Recipe::where('status', Recipe::RECIPE_STATUS_PUBLISHED)->with('ingredients', 'author', 'steps', 'userLastVote', 'userFavorite')->paginate(10);
     }
 
     /**

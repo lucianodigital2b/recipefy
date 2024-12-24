@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Favorite extends Model
 {
-    protected $table = 'recipe_user_favortes';
+    protected $table = 'recipe_user_favorites';
 
 }

@@ -34,6 +34,8 @@ class RecipeResource extends JsonResource
 			'author' => $this->whenLoaded('author', $this->author),
 			'steps' => $this->whenLoaded('steps', $this->steps),
 			'ingredients' => $this->whenLoaded('ingredients', $this->ingredients),
+			'userVote' => $this->whenLoaded('userLastVote', $this->userLastVote),
+			'userFavorite' => $this->whenLoaded('userFavorite', $this->userFavorite),
         ];
     }
 }
