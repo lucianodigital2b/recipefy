@@ -25,7 +25,7 @@ class FavoriteService
                 'user_id' => $userId,
                 'recipe_id' => $recipeId,
                 'type' => $type,
-            ]));
+            ]))->toOthers();
 
             return $response;
         }
@@ -41,7 +41,7 @@ class FavoriteService
             'user_id' => $userId,
             'recipe_id' => $recipeId,
             'type'      => -1
-        ]));
+        ]))->toOthers();
 
         return $response;
     }

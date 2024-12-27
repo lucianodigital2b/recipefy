@@ -67,8 +67,12 @@ class RecipeController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateRecipeRequest  $request, $id)
+    public function update(UpdateRecipeRequest $request, $id)
     {
+        if ($request->user()->id !== $request->user_id) {
+            return response()->json(['message' => 'You are not authorized to update this recipe.'], 403);
+        }
+        
         $recipe = $this->recipeService->updateRecipe($id, $request->all());
         return response()->json($recipe);
     }

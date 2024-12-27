@@ -63,7 +63,7 @@
 
 <style scoped>
   .bg-img {
-    background: url('../img/login-img.jpeg') no-repeat center center;
+    background: url('/img/login-img.jpeg') no-repeat center center;
     background-size: cover;
   }
 

@@ -21,7 +21,7 @@ export function useFavorite(recipeId, initialFavorites, initialHasFavorited ) {
     loading.value = true;
 
     try {
-      await axios.post('/recipes/' + recipeId + '/favorite', {
+      await axios.post('/recipes/' + toValue(recipeId) + '/favorite', {
         direction: hasFavorited.value
       });
     }finally {

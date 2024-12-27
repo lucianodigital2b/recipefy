@@ -1,9 +1,10 @@
 <template>
-    <!-- <div class="colored-bg">
-
-    </div> -->
     <div class="col-lg-6 mx-auto my-7">
-        <div class="">
+        <div class="d-flex align-items-center justify-content-center">
+            <loading :loading="isFetching" />
+        </div>
+
+        <div class="" v-if="!isFetching">
                 <div class="row mb-7">
                     <div class="col-md-12">
                         <img :src="'/img/blank-image-recipe.png'" alt="" class="img-fluid">
@@ -77,24 +78,9 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <div class="d-inline-flex align-items-center rounded-3 mt-4" style="background-color: #F1F1F4;">
-                    <button @click.prevent="changeVote(1)" class="border-0 btn btn-sm btn-upvote" :class="{ 'has-upvoted': hasUpvoted }" :disabled="loading.value || hasUpvoted">
-                        <ArrowUpIcon class="hero-icon"/>
-                    </button>
-                    <span class="text-dark">{{ votes }}</span>
-                    <button @click.prevent="changeVote(-1)" class="border-0 btn btn-sm btn-downvote" :class="{ 'has-downvoted': hasDownvoted }" :disabled="loading.value || hasDownvoted">
-                        <ArrowDownIcon class="hero-icon"/>
-                    </button>
-                    </div>
-                    <div class="d-inline-flex align-items-center rounded-3 mt-4" style="background-color: #F1F1F4;">
-                    <button @click.prevent="favorite" class="btn btn-sm" :class="{ 'has-favorited': hasFavorited }" :disabled="loadingFavorite.value">
-                        {{ favorites }}
-                        <HeartIcon v-if="!hasFavorited" class="hero-icon btn-favorited"/>
-                        <HeartIconSolid v-if="hasFavorited" class="hero-icon"/>
-                    </button>
-                    </div>
+                    <upvote-downvote-button :recipe="recipe" />
+                    <favorite-button :recipe="recipe" />
                 </div>
-
         </div>
     </div>
 </template>
@@ -148,34 +134,33 @@
 <script setup>
 
 import { onMounted, toValue, watch, watchEffect } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useRecipesStore } from '../../store/modules/recipes'
 import { ref, reactive } from 'vue'
 import axios from '../../plugins/axios';
 import { PlusIcon, XMarkIcon, PencilSquareIcon, ClockIcon, CheckCircleIcon, ArrowDownIcon, ArrowUpIcon, HeartIcon } from '@heroicons/vue/24/outline'
-import { HeartIcon as HeartIconSolid } from '@heroicons/vue/24/solid'
-import { useVote } from '../../composables/recipes/useVote';
-import { useFavorite } from '../../composables/recipes/useFavorite';
 
 const route = useRoute();
-const router = useRouter();
 const store = useRecipesStore();
 
 const id = route.params.id;
 const recipe = reactive({});
-
+const isFetching = ref(false);
 
 onMounted(() => {
     if (id) {
-        axios.get(`/recipes/${id}`).then((response) => {
-            Object.assign(recipe, response.data);
-        });
+        isFetching.value = true;
+        try {
+            axios.get(`/recipes/${id}`).then((response) => {
+                Object.assign(recipe, response.data);
+            });
+
+        }finally {
+            isFetching.value = false;
+        }
     }
 });
 
-
-const { votes, loading, changeVote, hasUpvoted, hasDownvoted } = useVote(id, () => recipe.votes, () => recipe.userVote?.type == 1, () => recipe.userVote?.type == -1);
-const { favorites, hasFavorited, favorite, loading: loadingFavorite } = useFavorite(id, () => recipe.favorites, () => recipe.userFavorite != null);
 
 
 </script>

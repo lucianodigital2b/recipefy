@@ -24,7 +24,7 @@ export function useVote(recipeId, initialVotes, initialHasUpvoted, initialHasDow
     loading.value = true;
   
     try {
-      await axios.post(`/recipes/${recipeId}/vote`, {
+      await axios.post(`/recipes/${toValue(recipeId)}/vote`, {
         direction: vote
       });
     }finally {

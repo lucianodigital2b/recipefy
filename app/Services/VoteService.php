@@ -27,7 +27,7 @@ class VoteService
             'user_id' => $userId,
             'recipe_id' => $recipeId,
             'type' => $type,
-        ]));
+        ]))->toOthers();
     }
 
 }

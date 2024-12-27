@@ -14,22 +14,8 @@
           <div class="text-muted"><small>By {{ author }}</small></div>
 
           <div class="d-flex gap-2">
-            <div class="d-inline-flex align-items-center rounded-3 mt-4" style="background-color: #F1F1F4;">
-              <button @click.prevent="changeVote(1)" class="btn btn-sm btn-upvote" :class="{ 'has-upvoted': hasUpvoted }" :disabled="loading.value || hasUpvoted">
-                <ArrowUpIcon class="hero-icon"/>
-              </button>
-              <span class="text-dark">{{ votes }}</span>
-              <button @click.prevent="changeVote(-1)" class="btn btn-sm btn-downvote" :class="{ 'has-downvoted': hasDownvoted }" :disabled="loading.value || hasDownvoted">
-                <ArrowDownIcon class="hero-icon"/>
-              </button>
-            </div>
-            <div class="d-inline-flex align-items-center rounded-3 mt-4" style="background-color: #F1F1F4;">
-              <button @click.prevent="favorite" class="btn btn-sm" :class="{ 'has-favorited': hasFavorited }" :disabled="loadingFavorite.value">
-                {{ favorites }}
-                <HeartIcon v-if="!hasFavorited" class="hero-icon btn-favorited"/>
-                <HeartIconSolid v-if="hasFavorited" class="hero-icon"/>
-              </button>
-            </div>
+            <upvote-downvote-button :recipe="props" />
+            <favorite-button :recipe="props" />
           </div>
 
         </div>
@@ -57,12 +43,6 @@
 </style>
 
 <script setup>
-import { ref, reactive } from 'vue';
-import { ArrowDownIcon, ArrowUpIcon, HeartIcon } from '@heroicons/vue/24/outline'
-import { HeartIcon as HeartIconSolid } from '@heroicons/vue/24/solid'
-import axios from '../plugins/axios';
-import { useVote } from '../composables/recipes/useVote';
-import { useFavorite } from '../composables/recipes/useFavorite';
 
 const props = defineProps({
   id: Number,
@@ -77,8 +57,6 @@ const props = defineProps({
   hasFavorited: Boolean,
 })
 
-const { votes, loading, changeVote, hasUpvoted, hasDownvoted } = useVote(props.id, () => props.votes, () => props.hasUpvoted, () => props.hasDownvoted);
-const { favorites, hasFavorited, favorite, loading: loadingFavorite } = useFavorite(props.id, () => props.favorites, () => props.hasFavorited);
 
 
 
