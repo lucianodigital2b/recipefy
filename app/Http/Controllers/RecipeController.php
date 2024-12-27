@@ -69,7 +69,8 @@ class RecipeController extends Controller
      */
     public function update(UpdateRecipeRequest $request, $id)
     {
-        if ($request->user()->id !== $request->user_id) {
+
+        if ($request->user()->id !== $request['author']['id']) {
             return response()->json(['message' => 'You are not authorized to update this recipe.'], 403);
         }
         

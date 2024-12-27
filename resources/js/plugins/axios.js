@@ -36,7 +36,7 @@ axios.interceptors.response.use(response => response, error => {
   }
 
 
-  if (status >= 500 || status == 405) {
+  if (status >= 403) {
     serverError(error.response)
   }
 
@@ -69,10 +69,11 @@ async function serverError (response) {
 
     serverErrorModalShown = true
   } else {
+
     Swal.fire({
       icon: 'error',
       title: 'An error has occurred.',
-      text: 'Try again later.',
+      text: response.data.message,
       reverseButtons: true,
       confirmButtonText: 'ok',
       cancelButtonText: 'cancel'

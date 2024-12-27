@@ -243,11 +243,11 @@ const thumbnailPreview = ref(null);
 const id = route.params.id;
 
 const saveRecipe = async () => {
-    // if (id) {
-    //     const { data } = await form.patch('/recipes/' + id, form)
-    // } else {
-    //     await form.post('/recipes')
-    // }
+    if (id) {
+        const { data } = await form.patch('/recipes/' + id, form)
+    } else {
+        await form.post('/recipes')
+    }
 
     router.push({ path: '/dashboard' });
 };
