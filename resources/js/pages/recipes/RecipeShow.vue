@@ -1,64 +1,44 @@
 <template>
-    <div class="colored-bg">
+    <div class="col-lg-6 mx-auto my-7">
+        <div class="d-flex align-items-center justify-content-center">
+            <loading :loading="isFetching" />
+        </div>
 
-    </div>
-    <div class="col-lg-7 mx-auto my-7">
-        <card class="rounded-4 p-md-3 shadow-sm">
-            <h3 class="mb-5">{{ form.id ? 'Edit Recipe' : 'Create a recipe' }}</h3>
-            <form @submit.prevent="saveRecipe">
+        <div class="" v-if="!isFetching">
                 <div class="row mb-7">
-                    <div class="col-md-7">
-                        <div class="mb-3">
-                            <label>Title</label>
-                            <input v-model="form.title" :class="{ 'is-invalid': form.errors.has('title') }" class="form-control" name="title">
-                            <has-error :form="form" field="title" />
-            
-                        </div>
-                        <div class="mb-3">
-                            <label>Description</label>
-                            
-                            <textarea rows="5" v-model="form.description" :class="{ 'is-invalid': form.errors.has('description') }" class="form-control" name="description"></textarea>
-                            <has-error :form="form" field="description" />
-            
-                        </div>
+                    <div class="col-md-12">
+                        <img :src="'/img/blank-image-recipe.png'" alt="" class="img-fluid">
                     </div>
-                    <div class="col-md-5">
-                        <label>Thumbnail (optional)</label>
-                        <div class="thumbnail-wrapper position-relative">
-                            <button class="file-input-button " @click.prevent="onPickFile">
-                                <div v-if="!thumbnailPreview" class="input-empty"></div>
-                                <div
-                                    v-if="thumbnailPreview"
-                                    class="image-preview"
-                                    :style="{ backgroundImage: `url(${thumbnailPreview})` }"
-                                >
-                                </div>
-                                
-                            </button>
-                            <button class="btn btn-light clear-thumbnail p-1 py-0" @click.prevent="clearThumbnail" v-if="thumbnailPreview"><XMarkIcon class="hero-icon"></XMarkIcon></button>
-
-                        </div>
-
+                    <div class="col-md-12 mb-5">
+                        <h2>{{ recipe.title }}</h2>
                         <div class="text-muted">
-                            <small>
-                                Use JPEG or PNG. Must be at least 960 x 960. Max file size: 30MB
-                            </small>
+                            By {{ recipe.author?.name }} · {{ recipe.created_at }}
                         </div>
-                        <input
-                            type="file"
-                            style="display: none"
-                            ref="thumbnail"
-                            accept=".png, .jpg, .jpeg"
-                            @change="handleFile"
-                        />
-                        <HasError :form="form" field="thumbnail" />
                     </div>
+                    <div class="col-md-7">
+                        <div class="mb-3 ">
+                            {{ recipe.description }}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+
+                        <div class="row border rounded py-4 px-2">
+                            <div class="col-md-12 mb-5">
+                                <div><strong>Prep time:</strong> <span>{{ recipe.prep_time }} {{ recipe.prep_time_type_formatted }}</span></div>
+                            </div>
+                            <div class="col-md-8 mb-5">
+                                <div><strong>Servings:</strong> {{ recipe.servings }}</div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
                 </div>
                 <div class="row">
                     <h6>Gallery</h6>
                     <div class="col-md-12">
                         <div class="recipe-gallery">
-                            <div class="recipe-gallery-item" v-for="image in form.gallery" :key="image">
+                            <div class="recipe-gallery-item" v-for="image in recipe.gallery" :key="image">
                                 <button class="close-button" @click.prevent="removeImage(image)"><XMarkIcon class="hero-icon"></XMarkIcon></button>
                                 <img :src="image" alt="">
                             </div>
@@ -71,18 +51,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="mb-3">
-                            <h6 class="mb-6">Ingredients</h6>
-                            <div class="text-muted mb-3">
-                                List each ingredient on a separate line, specifying the quantity (e.g., cups, tablespoons) and any necessary preparation (e.g., sifted, softened, chopped)
+                            <h6 class="mb-6 font-weight-bold">Ingredients</h6>
+                       
+                            <div class="d-flex gap-2 align-items-center" v-for="ingredient in recipe.ingredients" :key="ingredient">  
+                                <div class=" d-flex align-items-center gap-1"><span class="text-orange fs-2 font-weight-bold">·</span><span>{{ ingredient.name }}</span></div>  
                             </div>
-                            <div class="d-flex gap-2 align-items-center mb-3" v-for="ingredient in form.ingredients" :key="ingredient">    
-                                <input v-model="ingredient.name" class="form-control " :placeholder="ingredient.placeholder ?? ''">
-                                <v-button type="light" class="rounded-pill p-1" @click.prevent="removeIngredient"><XMarkIcon class="hero-icon"></XMarkIcon></v-button>
-                            </div>
-
-                            <v-button type="outline-primary" @click.prevent="addIngredient" class="px-7"><PlusIcon class="hero-icon"></PlusIcon> add ingredient</v-button>
-                            <has-error :form="form" field="ingredients" />
-                            
                         </div>
                     </div>
                 </div>
@@ -90,61 +63,25 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="mb-3">
-                            <h6 class="mb-6">Directions</h6>
-                            <div class="text-muted mb-3">
-                                Provide step-by-step instructions for making your recipe, including details like oven temperatures, cooking or baking times, and pan sizes. Use optional headers to organize sections of the process, such as "Prep," "Bake," or "Decorate."
-                            </div>
-                            <div v-for="(step, index) in form.steps" :key="step">
-                                <div for="" class="form-label flex-1">Step {{ index +1 }}</div>
+                            <h6 class="mb-6 font-weight-bold">Directions</h6>
+                           
+                            <div v-for="(step, index) in recipe.steps" :key="step">
+                                <h6 class="form-label flex-1 ">Step {{ index +1 }}</h6>
                                 <div class="d-flex gap-2 align-items-center mb-3">
-                                    <input v-model="step.description" class="form-control" :placeholder="step.placeholder ?? ''">
-                                    <v-button type="light" @click.prevent="removeStep" class="rounded-pill p-1"><XMarkIcon class="hero-icon"></XMarkIcon></v-button>
-
+                                    <CheckCircleIcon class="hero-icon"></CheckCircleIcon>
+                                    <div>{{ step.description }}</div>  
                                 </div>
                             </div>
-                            <v-button type="outline-primary" @click.prevent="addStep"><PlusIcon class="hero-icon"></PlusIcon> add step</v-button>
-                            <has-error :form="form" field="steps" />
             
                         </div>
                     </div>
                 </div>
-                <hr>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <label>Prep time</label>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <input placeholder="e.g. 30"  v-model="form.prep_time" :class="{ 'is-invalid': form.errors.has('prep_time') }" class="form-control" name="prep_time" type="number">
-                            <has-error :form="form" field="prep_time" />
-            
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="">
-                            <select name="prep_time_type" id="" class="form-control" v-model="form.prep_time_type">
-                                <option value="1">mins</option>    
-                                <option value="2">hours</option>    
-                                <option value="3">days</option>    
-                            </select>
-                            <has-error :form="form" field="prep_time_type" />
-                        </div>
-                    </div>
-
-                    <div class="col-md-8 mb-5">
-                        <label>Servings</label>
-                        <input placeholder="e.g. 3"  v-model="form.servings" :class="{ 'is-invalid': form.errors.has('servings') }" class="form-control" name="servings" type="number">
-                        <has-error :form="form" field="servings" />
-                    </div>
-                    
+                <div class="d-flex gap-2">
+                    <upvote-downvote-button :recipe="recipe" />
+                    <favorite-button :recipe="recipe" />
                 </div>
-                
-                <v-button class="" large :loading="form.busy">save</v-button>
-            </form>
-
-
-        </card>
+        </div>
     </div>
 </template>
 
@@ -196,122 +133,34 @@
 
 <script setup>
 
-import { onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import Form from 'vform'
+import { onMounted, toValue, watch, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
 import { useRecipesStore } from '../../store/modules/recipes'
 import { ref, reactive } from 'vue'
 import axios from '../../plugins/axios';
-import { PlusIcon, XMarkIcon, PencilSquareIcon } from '@heroicons/vue/24/outline'
+import { PlusIcon, XMarkIcon, PencilSquareIcon, ClockIcon, CheckCircleIcon, ArrowDownIcon, ArrowUpIcon, HeartIcon } from '@heroicons/vue/24/outline'
 
 const route = useRoute();
-const router = useRouter();
 const store = useRecipesStore();
 
-const form = reactive( new Form({
-  title: '',
-  description: '',
-  thumbnail: null,
-  servings: '',
-  prep_time: '',
-  prep_time_type: '1',
-  ingredients: [
-    {
-        placeholder: 'e.g. 1 spoon of sugar',
-        name: '',
-    }, 
-    {
-        name: '',
-        placeholder: 'e.g. 1 cup of rice',
-    }, 
-    {
-        name: '',
-        placeholder: 'e.g. 2 spoons of cream',
-    }
-  ],
-  steps: [
-        {
-            description: '',
-            placeholder: 'e.g. Turn on the Airless Air Fryer',
-        },
-    ],
-
-}));
-const thumbnail = ref(null);
-const thumbnailPreview = ref(null);
-
 const id = route.params.id;
-
-const saveRecipe = async () => {
-    if (id) {
-        const { data } = await form.patch('/recipes/' + id, form)
-    } else {
-        await form.post('/recipes')
-    }
-
-    router.push({ path: '/dashboard' });
-};
+const recipe = reactive({});
+const isFetching = ref(false);
 
 onMounted(() => {
     if (id) {
-        form.get(`/recipes/${id}`).then((response) => {
-            Object.assign(form, response.data);
-        });
+        isFetching.value = true;
+        try {
+            axios.get(`/recipes/${id}`).then((response) => {
+                Object.assign(recipe, response.data);
+            });
+
+        }finally {
+            isFetching.value = false;
+        }
     }
 });
 
-const addStep = () => {
-    form.steps.push({});
-}
 
-const removeStep = (index) => {
-    form.steps.splice(index, 1);
-}
 
-const addIngredient = () => {
-    form.ingredients.push({});
-}   
-
-const removeIngredient = (index) => {
-    form.ingredients.splice(index, 1);
-}
-
-const handleFile = (event) => {
-    // We'll grab just the first file...
-    // You can also do some client side validation here.
-    const file = event.target.files[0]
-
-    if(!file) {
-        return;
-    }
-
-    if(!file.type.startsWith("image/")) {
-        alert('Uplaod an image');
-    }
-
-    
-    if (file.size > 31800000) { // 30MB
-        alert('File too big (> 30MB)');
-        return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-        thumbnailPreview.value = e.target.result;
-    };
-
-    reader.readAsDataURL(file);
-    
-    // Set the file object onto the form...
-    form.thumbnail = file
-};
-
-const onPickFile = () => {
-    thumbnail.value.click()
-}
-const clearThumbnail = () => {
-    form.thumbnail = null
-    thumbnailPreview.value = null
-}
 </script>

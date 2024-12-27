@@ -5,6 +5,9 @@ namespace App\Services;
 use App\Models\Recipe;
 use App\Services\IngredientService;
 use App\Services\StepService;
+use Auth;
+use Storage;
+use Str;
 
 class RecipeService
 {
@@ -21,9 +24,9 @@ class RecipeService
     /**
      * Get all recipes.
      */
-    public function getAllRecipes()
+    public function getPublishedRecipes()
     {
-        return Recipe::all();
+        return Recipe::where('status', Recipe::RECIPE_STATUS_PUBLISHED)->with('ingredients', 'author', 'steps', 'userLastVote', 'userFavorite')->paginate(10);
     }
 
     /**
@@ -40,6 +43,20 @@ class RecipeService
     public function createRecipe(array $data)
     {
 
+        if (isset($data['thumbnail'])) {
+
+            $filename = uniqid() . '.' . $data['thumbnail']->getClientOriginalExtension();
+            $path = Storage::disk('public')->putFileAs('uploads/recipes', $data['thumbnail'], $filename);
+
+            $data['thumbnail'] = $path;
+
+        }
+
+        $data['created_by'] = Auth::user()->id;
+        $data['slug'] = Str::slug($data['title'], "-");
+
+        $recipe = Recipe::create($data);
+
         if (isset($data['ingredients'])) {
             $this->ingredientService->createIngredients($recipe->id, $data['ingredients']);
         }
@@ -48,7 +65,7 @@ class RecipeService
             $this->stepService->createSteps($recipe->id, $data['steps']);
         }
         
-        return Recipe::create($data);
+        return $recipe;
     }
 
     /**

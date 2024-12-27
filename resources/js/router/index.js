@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, } from 'vue-router';
 import Login from '../pages/auth/Login.vue';
 import Register from '../pages/auth/Register.vue';
 import Dashboard from '../pages/Dashboard.vue';
@@ -19,6 +19,7 @@ async function loadLayoutMiddleware(route, from) {
     
     try {
         let layout = route.meta.layout;
+        
         let layoutComponent = await import(`/resources/js/layouts/${layout}.vue`)
 
         route.meta.layoutComponent = layoutComponent.default
@@ -29,6 +30,7 @@ async function loadLayoutMiddleware(route, from) {
         
         route.meta.layoutComponent = layoutComponent.default
     }
+
 
 
 }

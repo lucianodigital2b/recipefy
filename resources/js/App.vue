@@ -1,15 +1,17 @@
 <template>
-  <component :is="this.$route.meta.layoutComponent">
+  <component :is="route.meta.layoutComponent">
       <router-view />
   </component>
 </template>
 
 <script setup>
 
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { globalRouter } from "./router/globalRouter";
 
 const router = useRouter();
+const route = useRoute();
+
 globalRouter.router = router;
 
 </script>

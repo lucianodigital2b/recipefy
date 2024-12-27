@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
+        "predis/predis": "2.0",
         "spatie/laravel-medialibrary": "^11.11"
     },
     "require-dev": {

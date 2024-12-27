@@ -12,9 +12,13 @@ class IngredientService
     public function createIngredients(int $recipeId, array $ingredients)
     {
         foreach ($ingredients as $ingredient) {
+            if(!isset($ingredient['name'])) {
+                continue;
+            }
+            
             Ingredient::create([
                 'recipe_id' => $recipeId,
-                'name' => $ingredient,
+                'name' => $ingredient['name'],
             ]);
         }
     }

@@ -9,18 +9,21 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-
+import './echo'
 
 const vuetify = createVuetify({
     components,
     directives
   })
 
+
+  
 const app = createApp(App).use(router).use(store).use(vuetify);
+
+app.config.globalProperties.$echo = Echo;
 
 nativeComponents.forEach(component => {
     app.component(component.name, component);
 });
 
-console.log(app);
 app.mount('#app');

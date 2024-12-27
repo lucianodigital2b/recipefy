@@ -11,10 +11,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
-        // Bind RecipeService to the service container
+        // Bind services to the service container
         $this->app->bind('RecipeService', function ($app) {
             return new RecipeService();
+        });
+        
+        $this->app->bind('IngredientService', function ($app) {
+            return new IngredientService();
+        });
+        
+        $this->app->bind('StepService', function ($app) {
+            return new StepService();
+        });
+        
+        $this->app->bind('VoteService', function ($app) {
+            return new VoteService();
+        });
+        
+        $this->app->bind('FavoriteService', function ($app) {
+            return new FavoriteService();
         });
         
     }
