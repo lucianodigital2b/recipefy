@@ -9,7 +9,7 @@
           :votes="item.votes ?? 0"
           :favorites="item.favorites ?? 0"
           :hasUpvoted="item.userVote?.type == 1"
-          :hasDownvoted="item.userVote?.type < 1"
+          :hasDownvoted="item.userVote?.type == -1"
           :hasFavorited="item.userFavorite != null" 
         />
 

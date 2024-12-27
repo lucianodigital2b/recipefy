@@ -67,14 +67,14 @@ class Recipe extends Model implements HasMedia
     public function userLastVote()
     {
         return $this->hasOne(Vote::class)
-                    ->where('user_id', \Auth::user()->id)
+                    ->where('user_id', \Auth::user()?->id)
                     ->orderBy('id', 'desc');
     }
   
     public function userFavorite()
     {
         return $this->hasOne(Favorite::class)
-                    ->where('user_id', \Auth::user()->id)
+                    ->where('user_id', \Auth::user()?->id)
                     ->orderBy('id', 'desc');
     }
 

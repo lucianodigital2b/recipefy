@@ -42,8 +42,13 @@ return new class extends Migration
      */
     public function down(): void
     {
+        \DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+
+        \DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+
     }
 };

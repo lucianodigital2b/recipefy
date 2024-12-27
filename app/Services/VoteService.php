@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Recipe;
 use Illuminate\Support\Facades\DB;
+use App\Events\RecipeVoteChanged;
 
 class VoteService
 {
@@ -21,6 +22,12 @@ class VoteService
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        broadcast(new RecipeVoteChanged([
+            'user_id' => $userId,
+            'recipe_id' => $recipeId,
+            'type' => $type,
+        ]));
     }
 
 }

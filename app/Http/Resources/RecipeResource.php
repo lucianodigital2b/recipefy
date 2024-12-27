@@ -16,6 +16,16 @@ class RecipeResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+        $userActions = [];
+
+        if(\Auth::user()) {
+            $userActions = [
+                'userVote' => $this->whenLoaded('userLastVote', $this->userLastVote),
+			    'userFavorite' => $this->whenLoaded('userFavorite', $this->userFavorite),
+            ];
+        }
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -34,8 +44,7 @@ class RecipeResource extends JsonResource
 			'author' => $this->whenLoaded('author', $this->author),
 			'steps' => $this->whenLoaded('steps', $this->steps),
 			'ingredients' => $this->whenLoaded('ingredients', $this->ingredients),
-			'userVote' => $this->whenLoaded('userLastVote', $this->userLastVote),
-			'userFavorite' => $this->whenLoaded('userFavorite', $this->userFavorite),
+            ...$userActions
         ];
     }
 }

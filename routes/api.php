@@ -37,8 +37,20 @@ Route::get('/auth/callback', function () {
 
 
 Route::group(['middleware' => ['auth:sanctum']], function() {
-    Route::apiResource('recipes', RecipeController::class);
+    Route::apiResource('recipes', RecipeController::class)->except(['show', 'index']);
     
     Route::post('recipes/{recipe}/vote', [RecipeActionController::class, 'updateVote'])->name('recipes.votes.update');
     Route::post('recipes/{recipe}/favorite', [RecipeActionController::class, 'updateFavorite'])->name('recipes.favorite.update');
+});
+
+
+Route::get('recipes/{id}', [RecipeController::class, 'show']);
+Route::get('recipes', [RecipeController::class, 'index']);
+
+
+
+Route::get('/test', function () {
+    $message = App\Models\Vote::first();
+
+    dd(broadcast(new App\Events\RecipeFavoriteChanged($message->toArray())));
 });

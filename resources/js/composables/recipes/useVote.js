@@ -1,6 +1,7 @@
-import { ref, watch, watchEffect } from 'vue';
+import { ref, watch, watchEffect, onMounted } from 'vue';
 import axios from '../../plugins/axios';
 import { toValue } from 'vue';
+import { useAuthStore } from '../../store/modules/auth';
 
 
 export function useVote(recipeId, initialVotes, initialHasUpvoted, initialHasDownvoted) {
@@ -8,12 +9,12 @@ export function useVote(recipeId, initialVotes, initialHasUpvoted, initialHasDow
   const hasUpvoted = ref(initialHasUpvoted);
   const hasDownvoted = ref(initialHasDownvoted);
   const loading = ref(false);
+  const authStore = useAuthStore();
 
-  // console.log(initialVotes, initialHasUpvoted, initialHasDownvoted);  
   
 
   const changeVote = async (vote) => {
-    if( loading.value) return;
+    if( loading.value || !authStore.isAuthenticated) return;
     
   
     votes.value += vote;
@@ -37,6 +38,17 @@ export function useVote(recipeId, initialVotes, initialHasUpvoted, initialHasDow
     hasUpvoted.value = toValue(initialHasUpvoted);
     hasDownvoted.value = toValue(initialHasDownvoted);
   })
+
+  onMounted(() => {
+    window.Echo.channel(`recipe-votes.${recipeId}`)
+        .listen("RecipeVoteChanged", (response) => {
+          
+          const { data } = response;
+          
+          votes.value += data.type;
+        })
+  });
+
 
   return {
     votes,

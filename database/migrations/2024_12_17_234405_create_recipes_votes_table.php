@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recipes_votes_ledger');
+        Schema::dropIfExists('recipe_user_votes');
     }
 };

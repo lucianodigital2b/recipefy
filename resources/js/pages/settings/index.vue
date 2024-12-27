@@ -14,9 +14,7 @@
     </div>
 
     <div class="col-md-7">
-      <transition name="fade" mode="out-in">
         <router-view />
-      </transition>
     </div>
   </div>
 </template>

@@ -10,7 +10,7 @@ export default [
   { path: '/register', component: page('auth/Register.vue'), name: 'register', meta: { layout: 'basic' } },
   { path: '/recipes/create', component: page('recipes/RecipeForm.vue'), name: 'recipes.create', meta: { layout: 'default' } },
   { path: '/recipes/:id/edit', component: page('recipes/RecipeForm.vue'), name: 'recipes.edit', meta: { layout: 'default' } },
-  { path: '/recipes/:slug', component: page('recipes/RecipeShow.vue'), name: 'recipes.show', meta: { layout: 'default' } },
+  { path: '/recipes/:id/:slug', component: page('recipes/RecipeShow.vue'), name: 'recipes.show', meta: { layout: 'default', } },
   // { path: '/password/reset', name: 'password.request', component: page('auth/password/email.vue') },
   // { path: '/password/reset/:token', name: 'password.reset', component: page('auth/password/reset.vue') },
   // { path: '/email/verify/:id', name: 'verification.verify', component: page('auth/verification/verify.vue') },

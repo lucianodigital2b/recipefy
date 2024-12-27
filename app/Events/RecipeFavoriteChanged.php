@@ -9,9 +9,8 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class RecipeVoteChanged implements ShouldBroadcast
+class RecipeFavoriteChanged implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -31,7 +30,7 @@ class RecipeVoteChanged implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('recipe-votes.' . $this->data['recipe_id']),
+            new Channel('recipe-favorites.' . $this->data['recipe_id']),
         ];
     }
 }

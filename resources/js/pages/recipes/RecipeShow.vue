@@ -53,7 +53,7 @@
                             <h6 class="mb-6 font-weight-bold">Ingredients</h6>
                        
                             <div class="d-flex gap-2 align-items-center" v-for="ingredient in recipe.ingredients" :key="ingredient">  
-                                <div class=" d-flex align-items-center gap-1"><span class="text-secondary fs-2 font-weight-bold">·</span><span>{{ ingredient.name }}</span></div>  
+                                <div class=" d-flex align-items-center gap-1"><span class="text-orange fs-2 font-weight-bold">·</span><span>{{ ingredient.name }}</span></div>  
                             </div>
                         </div>
                     </div>
@@ -78,20 +78,20 @@
 
                 <div class="d-flex gap-2">
                     <div class="d-inline-flex align-items-center rounded-3 mt-4" style="background-color: #F1F1F4;">
-                        <button @click.prevent="changeVote(1)" class="btn btn-sm btn-upvote" :class="{ 'has-upvoted': hasUpvoted }">
-                            <ArrowUpIcon class="hero-icon"/>
-                        </button>
-                        <span class="text-dark">{{ votes }}</span>
-                        <button @click.prevent="changeVote(-1)" class="btn btn-sm btn-downvote" :class="{ 'has-downvoted': hasDownvoted }">
-                            <ArrowDownIcon class="hero-icon"/>
-                        </button>
-                        </div>
-                        <div class="d-inline-flex align-items-center rounded-3 mt-4" style="background-color: #F1F1F4;">
-                        <button @click.prevent="favorite" class="btn btn-sm" :class="{ 'has-favorited': hasFavorited }">
-                            {{ favorites }}
-                            <HeartIcon v-if="!hasFavorited" class="hero-icon btn-favorited"/>
-                            <HeartIconSolid v-if="hasFavorited" class="hero-icon"/>
-                        </button>
+                    <button @click.prevent="changeVote(1)" class="border-0 btn btn-sm btn-upvote" :class="{ 'has-upvoted': hasUpvoted }" :disabled="loading.value || hasUpvoted">
+                        <ArrowUpIcon class="hero-icon"/>
+                    </button>
+                    <span class="text-dark">{{ votes }}</span>
+                    <button @click.prevent="changeVote(-1)" class="border-0 btn btn-sm btn-downvote" :class="{ 'has-downvoted': hasDownvoted }" :disabled="loading.value || hasDownvoted">
+                        <ArrowDownIcon class="hero-icon"/>
+                    </button>
+                    </div>
+                    <div class="d-inline-flex align-items-center rounded-3 mt-4" style="background-color: #F1F1F4;">
+                    <button @click.prevent="favorite" class="btn btn-sm" :class="{ 'has-favorited': hasFavorited }" :disabled="loadingFavorite.value">
+                        {{ favorites }}
+                        <HeartIcon v-if="!hasFavorited" class="hero-icon btn-favorited"/>
+                        <HeartIconSolid v-if="hasFavorited" class="hero-icon"/>
+                    </button>
                     </div>
                 </div>
 
@@ -174,7 +174,7 @@ onMounted(() => {
 });
 
 
-const { votes, loading, changeVote, hasUpvoted, hasDownvoted } = useVote(id, () => recipe.votes, () => recipe.userVote?.type == 1, () => recipe.userVote?.type != 1);
+const { votes, loading, changeVote, hasUpvoted, hasDownvoted } = useVote(id, () => recipe.votes, () => recipe.userVote?.type == 1, () => recipe.userVote?.type == -1);
 const { favorites, hasFavorited, favorite, loading: loadingFavorite } = useFavorite(id, () => recipe.favorites, () => recipe.userFavorite != null);
 
 
